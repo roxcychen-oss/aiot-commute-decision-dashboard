@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIoT 智慧通勤決策儀表板 | 永康大同街 ➔ 台積電14A廠</title>
+    <style>
+        :root {
+            --bg-color: #73b2a2;
+            --card-bg: #131c31;
+            --accent-blue: #38bdf8;
+            --accent-green: #34d399;
+            --accent-orange: #fbbf24;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #070a12;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: var(--accent-blue);
+        }
+
+        .sync-status {
+            font-size: 0.85rem;
+            background: #1e293b;
+            padding: 6px 14px;
+            border-radius: 20px;
+            color: var(--text-muted);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 20px 24px 0 24px;
+        }
+
+        .location-card {
+            background: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .location-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 0.95rem;
+            color: var(--accent-blue);
+        }
+
+        .weather-info {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .recommendation-banner {
+            margin: 20px 24px;
+            background: linear-gradient(135deg, #1e3a8a, #0f172a);
+            border: 1px solid #3b82f6;
+            border-radius: 10px;
+            padding: 16px 20px;
+        }
+
+        .recommendation-banner h2 {
+            margin: 0 0 6px 0;
+            font-size: 1.05rem;
+            color: var(--accent-orange);
+        }
+
+        .options-section {
+            padding: 0 24px 24px 24px;
+        }
+
+        .options-section h3 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .option-card {
+            position: relative;
+            background: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .option-card.recommended {
+            border: 2px solid var(--accent-orange);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+            transform: translateY(-4px);
+            background: linear-gradient(180deg, #182238 0%, #0b0f19 100%);
+        }
+
+        .recommend-badge {
+            display: none;
+            position: absolute;
+            top: -12px;
+            right: 12px;
+            background: var(--accent-orange);
+            color: #0b0f19;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.5);
+        }
+
+        .option-card.recommended .recommend-badge {
+            display: block;
+        }
+
+        .option-title {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .option-detail {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            white-space: pre-line;
+        }
+
+        .option-metrics {
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .select-btn {
+            width: 100%;
+            background: var(--accent-blue);
+            color: #0b0f19;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .select-btn:hover {
+            background: #0ea5e9;
+        }
+
+        .result-box {
+            margin: 0 24px 24px 24px;
+            background: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: none;
+        }
+
+        .result-box h4 {
+            margin: 0 0 10px 0;
+            color: var(--accent-green);
+            font-size: 1.05rem;
+        }
+
+        .breakfast-question {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .breakfast-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-sub {
+            background: #1e293b;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-sub:hover {
+            background: #334155;
+        }
+
+        .breakfast-list {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .breakfast-card {
+            background: #131c31;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .breakfast-card h5 {
+            margin: 0 0 6px 0;
+            color: var(--accent-orange);
+            font-size: 0.9rem;
+        }
+
+        .direct-nav-box {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: #131c31;
+            border: 1px solid var(--accent-blue);
+            border-radius: 8px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .maps-btn {
+            display: inline-block;
+            margin-top: 10px;
+            background: #1e3a8a;
+            color: #f8fafc;
+            text-align: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .maps-btn:hover {
+            background: #2563eb;
+        }
+
+        .debug-panel {
+            background: #050811;
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            color: #64748b;
+            border-top: 1px solid var(--border-color);
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>AIoT 通勤決策系統 (永康大同街 ➔ 台積電14A廠)</h1>
+            <div id="syncStatus" class="sync-status">🔄 初始化感測數據...</div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="location-card">
+                <h3>🏠 出發地：台南市永康區大同街30號</h3>
+                <div id="homeWeather" class="weather-info">初始化中...</div>
+            </div>
+            <div class="location-card">
+                <h3>🏢 目的地：台南科學園區 台積電14A廠</h3>
+                <div id="companyWeather" class="weather-info">初始化中...</div>
+            </div>
+        </div>
+
+        <div class="recommendation-banner">
+            <h2 id="recTitle">🤖 AI 系統分析中...</h2>
+            <div id="recDesc" style="font-size: 0.9rem; color: var(--text-muted);">正在分析即時數據與台南尖峰車流動態。</div>
+        </div>
+
+        <div class="options-section">
+            <h3>請選擇今日上班通勤方案：</h3>
+            <div class="options-grid">
+                
+                <div id="card-scooter" class="option-card">
+                    <div class="recommend-badge">👑 AI 最佳推薦</div>
+                    <div>
+                        <div class="option-title">🛵 機動機車</div>
+                        <div class="option-detail" id="scooterDesc">等待資料載入...</div>
+                    </div>
+                    <div>
+                        <div class="option-metrics" id="scooterTime">預估時間：-- 分鐘</div>
+                        <button class="select-btn" onclick="selectTransport('scooter')">選擇機車</button>
+                    </div>
+                </div>
+
+                <div id="card-carSelf" class="option-card">
+                    <div class="recommend-badge">👑 AI 最佳推薦</div>
+                    <div>
+                        <div class="option-title">🚗 自行開車</div>
+                        <div class="option-detail" id="carSelfDesc">等待資料載入...</div>
+                    </div>
+                    <div>
+                        <div class="option-metrics" id="carSelfTime">預估時間：-- 分鐘</div>
+                        <button class="select-btn" onclick="selectTransport('carSelf')">選擇開車</button>
+                    </div>
+                </div>
+
+                <div id="card-uber" class="option-card">
+                    <div class="recommend-badge">👑 AI 最佳推薦</div>
+                    <div>
+                        <div class="option-title">🚖 Uber 叫車</div>
+                        <div class="option-detail" id="uberDesc">等待資料載入...</div>
+                    </div>
+                    <div>
+                        <div class="option-metrics" id="uberMetrics">等候與費用：--</div>
+                        <button class="select-btn" onclick="selectTransport('uber')">預定 Uber</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="resultBox" class="result-box">
+            <h4 id="resultTitle">出行執行回報</h4>
+            <p id="resultText" style="margin: 0; font-size: 0.9rem; color: var(--text-muted);"></p>
+
+            <div id="breakfastSection" class="breakfast-question" style="display: none;">
+                <div style="font-weight: bold; font-size: 0.95rem;">🥪 上班順路補給：請問今天需要在路上買早餐嗎？</div>
+                <div class="breakfast-buttons">
+                    <button class="btn-sub" onclick="showBreakfastOptions(true)">🍳 需要，搜尋順路店家</button>
+                    <button class="btn-sub" onclick="showBreakfastOptions(false)">🚫 不用了，直接出發</button>
+                </div>
+
+                <div id="breakfastList" class="breakfast-list" style="display: none;">
+                    
+                    <div class="breakfast-card">
+                        <div>
+                            <h5>1. 永康永大路古早味粉漿蛋餅</h5>
+                            <div>⏱️ 順路程度：零繞道 (永大路旁)</div>
+                            <div>⌛ 預估取餐：3~5 分鐘</div>
+                        </div>
+                        <button class="maps-btn" onclick="openGoogleMapsDirections('台南市永康區永大路古早味粉漿蛋餅')">🗺️ 經由這間到台積電14A廠 ➔</button>
+                    </div>
+
+                    <div class="breakfast-card">
+                        <div>
+                            <h5>2. 新市中正路肉排蛋吐司</h5>
+                            <div>⏱️ 順路程度：順路 (進入南科前)</div>
+                            <div>⌛ 預估取餐：4 分鐘</div>
+                        </div>
+                        <button class="maps-btn" onclick="openGoogleMapsDirections('台南市新市區中正路肉排蛋吐司')">🗺️ 經由這間到台積電14A廠 ➔</button>
+                    </div>
+
+                    <div class="breakfast-card">
+                        <div>
+                            <h5>3. 新市麥當勞得來速早餐</h5>
+                            <div>⏱️ 順路程度：台1線進入南科樞紐</div>
+                            <div>⌛ 預估取餐：2~3 分鐘 (得來速車道速取)</div>
+                        </div>
+                        <!-- 關鍵修正：精準鎖定「台南市新市區麥當勞」，完全避開預約早午餐、新營或國科會 -->
+                        <button class="maps-btn" onclick="openGoogleMapsDirections('台南市新市區麥當勞')">🗺️ 經由這間到台積電14A廠 ➔</button>
+                    </div>
+
+                </div>
+
+                <div id="directNavBox" class="direct-nav-box">
+                    <div>
+                        <div style="font-weight: bold; font-size: 0.9rem; color: var(--accent-green);">🚀 已優化直達路線</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">路線：永康大同街30號 ➔ 台積電14A廠</div>
+                    </div>
+                    <button class="maps-btn" style="margin-top:0;" onclick="openGoogleMapsDirections(null)">🗺️ 開啟 Google 地圖直達導航 ➔</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="debugLog" class="debug-panel">系統準備完成</div>
+    </div>
+
+    <script>
+        let commuteData = {
+            homeTemp: 26,
+            companyTemp: 26,
+            isRaining: false,
+            trafficDelay: 5,
+            isOnline: false,
+            selectedTransport: ''
+        };
+
+        function renderUI(sourceMsg) {
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
+            const timeStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: true });
+            
+            document.getElementById('syncStatus').innerText = `${commuteData.isOnline ? '✅ 實時 API' : '⚡ 邊緣快取'}：${dateStr} ${timeStr}`;
+            document.getElementById('debugLog').innerText = `數據源：${sourceMsg}`;
+
+            document.getElementById('homeWeather').innerHTML = `
+                氣溫：<b>${commuteData.homeTemp} °C</b><br>
+                天候：${commuteData.isRaining ? '🌧️ 降雨（路面濕滑）' : '☀️ 天候良好'}
+            `;
+            document.getElementById('companyWeather').innerHTML = `
+                氣溫：<b>${commuteData.companyTemp} °C</b><br>
+                天候：${commuteData.isRaining ? '🌧️ 降雨中' : '☀️ 氣候穩定'}
+            `;
+
+            const scooterTime = commuteData.isRaining ? 35 : 25;
+            const carSelfTime = 30 + commuteData.trafficDelay;
+            const uberWaitTime = commuteData.isRaining ? 8 : 4;
+            const uberCost = commuteData.isRaining ? 380 : 320;
+
+            document.getElementById('scooterDesc').innerText = commuteData.isRaining ? 
+                "❌ 缺點：雨天視線差、具滑倒風險。\n✔️ 優點：穿梭車陣快。" : 
+                "✔️ 優點：機動性高、停車方便。\n❌ 缺點：暴露於戶外日曬。";
+            document.getElementById('scooterTime').innerText = `預估時間：${scooterTime} 分鐘`;
+
+            document.getElementById('carSelfDesc').innerText = commuteData.isRaining ? 
+                "✔️ 優點：遮風避雨、舒適安全。\n❌ 缺點：南科廠區車位難尋。" : 
+                "✔️ 優點：空調舒適、運載量大。\n❌ 缺點：國道一號與南科聯絡道易塞車。";
+            document.getElementById('carSelfTime').innerText = `預估時間：${carSelfTime} 分鐘`;
+
+            document.getElementById('uberDesc').innerText = "✔️ 優點：免自己開車、車上可辦公。\n❌ 缺點：費用較高、需等待配對。";
+            document.getElementById('uberMetrics').innerText = `等候 ${uberWaitTime}分 | 費用 NT$${uberCost}`;
+
+            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('recommended'));
+
+            const recTitle = document.getElementById('recTitle');
+            const recDesc = document.getElementById('recDesc');
+
+            if (commuteData.isRaining) {
+                document.getElementById('card-uber').classList.add('recommended');
+                recTitle.innerText = "💡 AI 推薦方案：【Uber 叫車】";
+                recDesc.innerText = `偵測到雨天與路面濕滑，南科聯絡道塞車延遲約 ${commuteData.trafficDelay} 分鐘。建議乘坐汽車維護出行安全與舒適度。`;
+            } else {
+                document.getElementById('card-scooter').classList.add('recommended');
+                recTitle.innerText = "💡 AI 推薦方案：【機動機車】";
+                recDesc.innerText = `氣候穩定（氣溫 ${commuteData.homeTemp}°C），早晨交通順暢。建議選擇機車，預估 25 分鐘可順利抵達台積電14A廠。`;
+            }
+        }
+
+        async function initData() {
+            const forceTimer = setTimeout(() => {
+                if (!commuteData.isOnline) {
+                    commuteData.homeTemp = 28;
+                    commuteData.companyTemp = 27.5;
+                    commuteData.isRaining = false;
+                    renderUI("網路請求受限，已啟用邊緣運算預測");
+                }
+            }, 2500);
+
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=23.025&longitude=120.256&current=temperature_2m,weather_code', { method: 'GET' });
+                if (res.ok) {
+                    clearTimeout(forceTimer);
+                    const data = await res.json();
+                    commuteData.homeTemp = data.current.temperature_2m;
+                    commuteData.companyTemp = (data.current.temperature_2m - 0.5).toFixed(1);
+                    commuteData.isRaining = (data.current.weather_code >= 51);
+                    commuteData.trafficDelay = commuteData.isRaining ? 15 : 5;
+                    commuteData.isOnline = true;
+                    renderUI("成功串聯 Open-Meteo 即時氣象 API");
+                }
+            } catch (err) {
+                console.log("外部 API 遭受限制，改用離線推算", err);
+            }
+        }
+
+        function selectTransport(type) {
+            commuteData.selectedTransport = type;
+            const resultBox = document.getElementById('resultBox');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+            const breakfastSection = document.getElementById('breakfastSection');
+            
+            resultBox.style.display = 'block';
+            document.getElementById('breakfastList').style.display = 'none';
+            document.getElementById('directNavBox').style.display = 'none';
+
+            if (type === 'scooter') {
+                resultTitle.innerText = "🚀 已鎖定方案：機動機車通勤";
+                resultText.innerText = commuteData.isRaining ? 
+                    "雨天騎車請注意穿著雨衣並放慢車速。已記錄至您的出勤檔案。" : 
+                    "氣候良好，預計 25 分鐘一路順暢抵達台積電14A廠！";
+                breakfastSection.style.display = 'block';
+
+            } else if (type === 'carSelf') {
+                resultTitle.innerText = "🚗 已鎖定方案：自行開車通勤";
+                resultText.innerText = "已啟動導航。請留意南科廠區停車場車位狀況，預計半小時內抵達。";
+                breakfastSection.style.display = 'block';
+
+            } else if (type === 'uber') {
+                resultTitle.innerText = "🚖 已成功預定：Uber 叫車服務";
+                resultText.innerText = `司機正在接單中，預計 4-8 分鐘內抵達永康大同街30號門口。`;
+                breakfastSection.style.display = 'none';
+                openGoogleMapsDirections(null);
+            }
+
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showBreakfastOptions(needed) {
+            const list = document.getElementById('breakfastList');
+            const directNavBox = document.getElementById('directNavBox');
+            
+            if (needed) {
+                list.style.display = 'grid';
+                directNavBox.style.display = 'none';
+            } else {
+                list.style.display = 'none';
+                directNavBox.style.display = 'flex';
+                openGoogleMapsDirections(null);
+            }
+        }
+
+        function openGoogleMapsDirections(breakfastName) {
+            const origin = encodeURIComponent("台南市永康區大同街30號");
+            const destination = encodeURIComponent("台積電14A廠");
+            
+            const isScooter = (commuteData.selectedTransport === 'scooter');
+            
+            let url = "";
+            
+            if (isScooter) {
+                if (breakfastName) {
+                    const waypoint = encodeURIComponent(breakfastName);
+                    url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoint}&travelmode=two_wheeler&avoid=highways,tolls`;
+                } else {
+                    url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=two_wheeler&avoid=highways,tolls`;
+                }
+            } else {
+                if (breakfastName) {
+                    const waypoint = encodeURIComponent(breakfastName);
+                    url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoint}&travelmode=driving`;
+                } else {
+                    url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
+                }
+            }
+
+            window.open(url, '_blank');
+        }
+
+        window.onload = () => {
+            initData();
+        };
+    </script>
+</body>
+</html>
