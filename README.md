@@ -1,4 +1,7 @@
-# 🚀 AIoT 智慧通勤與環境感知決策系統
+## 🎬 系統操作與動態展示 (System Demo)
+> ![AIoT Commute Dashboard Demo](./images/AIoT_weather_sys.gif)
+
+#  AIoT 智慧通勤與環境感知決策系統
 > **GitHub Repository:** [roxcychen-oss/aiot-commute-decision-dashboard](https://github.com/roxcychen-oss/aiot-commute-decision-dashboard)
 
 ---
@@ -25,16 +28,12 @@
 
 ---
 
-## 💡 3. 三大亮點 (Key Highlights)
+## 💡 3. 系統特色 (Key Highlights)
 
-1. **真實世界數據轉化 (Real-World Data Integration)**：讓外部環境感測數值（溫濕度、降雨氣象碼）直接介入系統決策樹，落實 AIoT 感知與決策核心精神。
-2. **極致的系統強固性 (System Reliability)**：具備嚴謹的異常攔截與離線防禦機制，體現對系統穩定度與使用者體驗的細膩要求。
-3. **高擴展性模組化設計 (Scalable Architecture)**：純函數與狀態物件分離架構，具備高度擴展性，可無縫對接生成式 AI 語意分析或 RAG 知識檢索模組。
+1. **真實世界數據轉化**：讓外部環境感測數值（溫濕度、降雨氣象碼）直接介入系統決策樹，落實 AIoT 感知與決策核心精神。
+2. **極致的系統強固性**：具備嚴謹的異常攔截與離線防禦機制，體現對系統穩定度與使用者體驗的細膩要求。
+3. **高擴展性模組化設計**：純函數與狀態物件分離架構，具備高度擴展性，可無縫對接生成式 AI 語意分析或 RAG 知識檢索模組。
 
 ---
 
-## 🎬 4. 系統操作與動態展示 (System Demo)
 
-> **操作展示影片 / 動態畫面預覽：**  
-> *(在此處可嵌入你的系統實際運作 GIF 動態圖或 YouTube 展示影片連結)*  
-> ![AIoT Commute Dashboard Demo](./images/AIoT_weather_sys.gif)
