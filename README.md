@@ -4,8 +4,11 @@
 > **GitHub Repository:** [roxcychen-oss/aiot-commute-decision-dashboard](https://github.com/roxcychen-oss/aiot-commute-decision-dashboard)
 
 <p align="center">
-  <img src="./images/qr-code.png" width="200" alt="Commute Dashboard QR Code">
-  <br>手機掃描即刻體驗智慧通勤系統
+  <a href="https://roxcychen-oss.github.io/aiot-commute-decision-dashboard/weather_adventure.html" target="_blank">
+    <img src="./images/qr-code.png" width="200" alt="Commute Dashboard QR Code">
+  </a>
+  <br>
+  <b>📱 手機掃描即刻體驗智慧通勤系統</b>
 </p>
 ---
 
