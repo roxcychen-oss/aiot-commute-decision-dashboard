@@ -1,9 +1,12 @@
 ## 🎬 系統操作與動態展示 (System Demo)
 > ![AIoT Commute Dashboard Demo](./images/AIoT_weather_sys.gif)
-
 #  AIoT 智慧通勤與環境感知決策系統
 > **GitHub Repository:** [roxcychen-oss/aiot-commute-decision-dashboard](https://github.com/roxcychen-oss/aiot-commute-decision-dashboard)
 
+<p align="center">
+  <img src="./images/qr-code.png" width="200" alt="Commute Dashboard QR Code">
+  <br>手機掃描即刻體驗智慧通勤系統
+</p>
 ---
 
 ## 📌 1. 專案背景與架構動機 (Project Overview)
